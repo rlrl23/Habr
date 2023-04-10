@@ -21,7 +21,7 @@ from articles.views import ArticleViewSet
 
 router = DefaultRouter()
 router.register('articles', ArticleViewSet)
-
+# router.register('categories', CategoryViewSet)
 
 
 urlpatterns = [
