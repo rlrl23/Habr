@@ -4,9 +4,15 @@ import { Link } from 'react-router-dom'
 
 const ArticleItem = ({article}) => {
     return (
-      <li><Link to={`/article/${article.id}`}> {article.title}</Link>
-      <p> {article.short_description} </p>
- </li>
+    <div class='art_item'>
+    <div class='title_container'>
+     <Link class='title' to={`/article/${article.id}`}> {article.title}</Link>
+      <div class='category'>{article.category}</div>
+       </div>
+      <p class='art_text'> {article.short_description} </p>
+      <div>{article.created_at} {article.author}</div>
+ </div>
+
 //       <li> {article.short_description} </li>
 //       <li> {article.author} </li>
 //       <li> {article.created_at} </li>
@@ -20,13 +26,13 @@ if (category_slug){
 let category=categories.filter((category)=> category.slug==category_slug)[0];
 console.log('category', category.name);
 let articles_by_cat = articles.filter((article)=> article.category==category.name);
-articles=articles_by_cat;
-}
+
+articles=articles_by_cat;}
     return (
-    <ul>
-    <li> Список статей </li>
+    <div class='art_container'>
     {articles.map((article) => <ArticleItem article={article} />)}
-   </ul>
+    </div>
     )
+
 }
 export default ArticleList
