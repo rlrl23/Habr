@@ -12,6 +12,7 @@ const ArticleItem = ({article}) => {
       <p class='art_text'> {article.short_description} </p>
       <div>{article.created_at} {article.author}</div>
  </div>
+
 //       <li> {article.short_description} </li>
 //       <li> {article.author} </li>
 //       <li> {article.created_at} </li>
@@ -25,6 +26,7 @@ if (category_slug){
 let category=categories.filter((category)=> category.slug==category_slug)[0];
 console.log('category', category.name);
 let articles_by_cat = articles.filter((article)=> article.category==category.name);
+
 articles=articles_by_cat;}
     return (
     <div class='art_container'>

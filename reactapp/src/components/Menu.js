@@ -2,7 +2,9 @@ import { Link } from 'react-router-dom'
 
 const CategoryItem = ({category}) => {
     return (
+
     <div class='cat_item'> <Link class='link' to={`/${category.slug}`}>{category.name}</Link> </div>
+
 )}
 
 const Menu = ({categories}) => {
@@ -19,6 +21,7 @@ const Menu = ({categories}) => {
                     <div class='cat_container'>
 {categories.map((category)=> <CategoryItem category={category}/> )}
                     </div>
+
                 </nav>
 
         </header>

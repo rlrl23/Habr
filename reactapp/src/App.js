@@ -32,11 +32,12 @@ class App extends React.Component {
 
   render() {
     return (
+
       <div class='main'>
+
       <BrowserRouter>
               <Menu categories={this.state.categories}/>
       <Routes>
-
         <Route exact path='/' element={ <ArticleList articles={this.state.articles} />} />
         <Route path='/:category_slug' element={<ArticleList articles={this.state.articles} categories={this.state.categories} />} />
         <Route path='/article/:id' element={<ArticleDetail articles={this.state.articles} comments={this.state.comments} />} />
