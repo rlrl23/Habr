@@ -129,3 +129,4 @@ dmypy.json
 .pyre/
 
 .reactapp.node_modules
+.idea
