@@ -4,10 +4,6 @@ from autoslug.fields import AutoSlugField
 
 
 class User(AbstractUser):
-    #username=models.CharField(max_length=64, unique=True, null=False)
-    # first_name = models.CharField(max_length=64)
-    # last_name = models.CharField(max_length=64)
-    #email = models.EmailField(unique=True)
     password=models.CharField(max_length=14)
 
     USERNAME_FIELD = 'username'
@@ -39,7 +35,7 @@ class Category(models.Model):
         return self.name
 
 class Article(models.Model):
-    category=models.ForeignKey(Category, on_delete=models.CASCADE,verbose_name='Категория')
+    category=models.ForeignKey(Category, on_delete=models.CASCADE,verbose_name='Категория', related_name='category_name')
     title = models.CharField(verbose_name='Заголовок', max_length=255)
     short_description = models.TextField(max_length=300, verbose_name='Краткое описание')
     full_description = models.TextField(verbose_name='Описание')
