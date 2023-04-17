@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, ReadOnlyField, ModelField
 from .models import Article, Category, Author, Comment, Like, Moderator
 
 class ArticleSerializer(ModelSerializer):
@@ -13,14 +13,15 @@ class CategorySerializer(ModelSerializer):
         prepopulated_fields={'slug':('name',)}
 
 class AuthorSerializer(ModelSerializer):
+    is_moderator=ReadOnlyField()
     class Meta:
         model = Author
-        fields = ['username','first_name','last_name','email','password','date_of_birth','description', 'is_banned']
+        fields = ['username','first_name','last_name','email','password','date_of_birth','description', 'is_banned', 'is_moderator']
 
 class ModeratorSerializer(ModelSerializer):
     class Meta:
         model = Moderator
-        fields = ['username','first_name','last_name','email','password']
+        fields = ['username','first_name','last_name','email','password', 'is_moderator']
 
 
 class CommentSerializer(ModelSerializer):
