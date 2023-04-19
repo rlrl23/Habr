@@ -13,9 +13,9 @@ class App extends React.Component {
     super(props)
     this.state = {
       'articles': [],
-      'categories':[{'name':'Дизайн', 'slug':'disign'},{'name':'Маркетинг', 'slug':'marketing'},{'name':'Web разработка', 'slug':'web_dev'},],
-      'comments':[{'id':1, 'article_id':1, 'text':'Гневный комментарий', 'author_id':1}, {'id':2, 'article_id':1, 'text':'Хороший комментарий', 'author_id':1}, {'id':3, 'article_id':2, 'text':'Гневный комментарий', 'author_id':1}],
-      'users':[]
+      'categories':[],
+      'comments':[],
+      'authors':[]
     }
   }
   componentDidMount() {
@@ -28,8 +28,45 @@ class App extends React.Component {
         )
       }
     ).catch(error => console.log(error))
-  }
 
+    axios.get('http://127.0.0.1:8000/categories/').then(
+      response => {
+        const categories = response.data
+        this.setState(
+          { 'categories': categories }
+        )
+      }
+    ).catch(error => console.log(error))
+
+axios.get('http://127.0.0.1:8000/authors/').then(
+      response => {
+        const authors = response.data
+        this.setState(
+          { 'authors': authors }
+        )
+      }
+    ).catch(error => console.log(error))
+
+ axios.get('http://127.0.0.1:8000/comments/').then(
+      response => {
+        const comments = response.data
+        this.setState(
+          { 'comments': comments }
+        )
+      }
+    ).catch(error => console.log(error))
+
+   axios.get('http://127.0.0.1:8000/likes/').then(
+      response => {
+        const likes = response.data
+        this.setState(
+          { 'likes': likes }
+        )
+      }
+    ).catch(error => console.log(error))
+
+
+}
   render() {
     return (
 
@@ -38,9 +75,9 @@ class App extends React.Component {
       <BrowserRouter>
               <Menu categories={this.state.categories}/>
       <Routes>
-        <Route exact path='/' element={ <ArticleList articles={this.state.articles} />} />
-        <Route path='/:category_slug' element={<ArticleList articles={this.state.articles} categories={this.state.categories} />} />
-        <Route path='/article/:id' element={<ArticleDetail articles={this.state.articles} comments={this.state.comments} />} />
+        <Route exact path='/' element={ <ArticleList articles={this.state.articles} categories={this.state.categories} authors={this.state.authors} />} />
+        <Route path='/:category_slug' element={<ArticleList articles={this.state.articles} categories={this.state.categories} authors={this.state.authors} />} />
+        <Route path='/article/:id' element={<ArticleDetail articles={this.state.articles} comments={this.state.comments} categories={this.state.categories} authors={this.state.authors}/>} />
         </Routes>
                 <Footer />
          </BrowserRouter>
