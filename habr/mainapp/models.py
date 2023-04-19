@@ -5,6 +5,7 @@ from autoslug.fields import AutoSlugField
 
 class User(AbstractUser):
     password=models.CharField(max_length=14)
+    is_moderator = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'
@@ -14,7 +15,6 @@ class User(AbstractUser):
         return self.username
 
 class Moderator(User):
-    is_moderator = models.BooleanField(default=True)
 
     def __str__(self):
         return self.username
@@ -45,15 +45,19 @@ class Article(models.Model):
     updated_at = models.DateTimeField(verbose_name='Дата обновления', auto_now=True, db_index=True)
     is_published = models.BooleanField(verbose_name='Опубликовано', default=True)
     is_deleted = models.BooleanField(verbose_name='Удалена', default=True)
+    is_approved=models.BooleanField(verbose_name='Проверена модератором', default=False)
 
     def __str__(self):
         return self.title
 
 class Comment(models.Model):
     text=models.TextField(null=False)
-    user=models.ForeignKey(Author, on_delete=models.CASCADE, null=False)
-    article= models.ForeignKey(Article, on_delete=models.CASCADE, null=True)
-    parent_id= models.IntegerField(null=True)
+    user=models.ForeignKey(Author, on_delete=models.CASCADE, null=False, related_name='comment_author',
+                    verbose_name='Автор')
+    article= models.ForeignKey(Article, on_delete=models.CASCADE, null=True, related_name='article',
+                    verbose_name='Статья')
+    parent_id= models.ForeignKey('self', on_delete=models.CASCADE, null=True, related_name='parent',
+                    verbose_name='Родитель')
     created_at = models.DateTimeField(verbose_name='Дата добавления', auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(verbose_name='Дата обновления', auto_now=True, db_index=True)
 
