@@ -1,8 +1,12 @@
+import {Link} from "react-router-dom";
+
 const CategoryItem = ({category}) => {
     return (
+        <Link to={`/${category.slug}`}>
         <div className='btn btn-primary category-item flex-fill'>
-            <strong>{category.name}</strong>
+             <strong>{category.name}</strong>
         </div>
+        </Link>
     )
 }
 

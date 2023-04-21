@@ -1,4 +1,5 @@
-from rest_framework.serializers import ModelSerializer, DateTimeField
+import datetime
+from rest_framework.serializers import ModelSerializer, DateTimeField, ReadOnlyField
 from .models import Article, Category, Author, Comment, Like, Moderator
 
 class ArticleSerializer(ModelSerializer):
@@ -8,7 +9,7 @@ class ArticleSerializer(ModelSerializer):
     class Meta:
         model = Article
         fields = ['id', 'category', 'author', 'created_at', "updated_at", "title", "short_description",
-                  "full_description", "is_published", "is_deleted"]
+                  "full_description", "is_published", "is_deleted", 'is_approved']
 
 class CategorySerializer(ModelSerializer):
     class Meta:
@@ -20,12 +21,12 @@ class AuthorSerializer(ModelSerializer):
     is_moderator=ReadOnlyField()
     class Meta:
         model = Author
-        fields = ['username','first_name','last_name','email','password','date_of_birth','description', 'is_banned']
+        fields = ['id','username','first_name','last_name','email','password','date_of_birth','description', 'is_banned', 'is_moderator']
 
 class ModeratorSerializer(ModelSerializer):
     class Meta:
         model = Moderator
-        fields = ['username','first_name','last_name','email','password', 'is_moderator']
+        fields = ['id','username','first_name','last_name','email','password', 'is_moderator']
 
 
 class CommentSerializer(ModelSerializer):

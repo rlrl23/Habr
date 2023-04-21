@@ -10,12 +10,11 @@ const ArticleItem = ({article, categories, authors}) => {
         <div class='art_item'>
             <div class='title_container'>
                 <Link class='title' to={`/article/${article.id}`}> {article.title}</Link>
-                <div class='category'>category name</div>
+                <div class='category'>{category.name}</div>
             </div>
             <p class='art_text'> {article.short_description} </p>
-            <div>{article.created_at} author username</div>
+            <div>{article.created_at} {author.username}</div>
         </div>
-
     )
 }
 
