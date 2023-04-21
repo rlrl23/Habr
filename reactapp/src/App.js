@@ -23,7 +23,7 @@ class App extends React.Component {
 
   componentDidMount() {
     axios
-      .get("http://10.0.0.8:8000/articles/")
+      .get("http://127.0.0.1:8000/articles/")
       .then((response) => {
         const articles = response.data;
         this.setState({ articles: articles });
