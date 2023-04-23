@@ -7,13 +7,27 @@ const ArticleItem = ({article, categories, authors}) => {
     let category = categories.filter((category) => category.id == article.category)[0];
     let author = authors.filter((author) => author.id == article.author)[0];
     return (
-        <div class='art_item'>
-            <div class='title_container'>
-                <Link class='title' to={`/article/${article.id}`}> {article.title}</Link>
-                <div class='category'>{category.name}</div>
+        <div style={{width: 550}}>
+            <div className="card">
+                <div className="card-header">
+                    <span className="badge text-bg-secondary">{category.name}</span><br/>
+                </div>
+                <div className="card-body overflow-auto" style={{height: 200}}>
+                    <h5 className="card-title"><Link className='title' to={`/article/${article.id}`}> {article.title}</Link></h5>
+                    <p className="card-text">
+                        {article['short_description']}
+                    </p>
+                </div>
+                <div className="card-footer text-body-secondary d-flex justify-content-between">
+                    <div>{article['created_at']} <strong>{author.username}</strong></div>
+                    <div>
+                        <span className='text-danger'>4</span>
+                        <i className="ms-2 me-4 bi bi-heart-fill text-danger"></i>
+                        <span>5</span>
+                        <i className="ms-2 bi bi-chat-right-text"></i>
+                    </div>
+                </div>
             </div>
-            <p class='art_text'> {article.short_description} </p>
-            <div>{article.created_at} {author.username}</div>
         </div>
     )
 }
@@ -26,11 +40,10 @@ const ArticleList = ({articles, categories, authors}) => {
 
         articles = articles_by_cat;
     }
-    ;
     return (
         <div>
             <Categories categories={categories}/>
-            <div class='art_container'>
+            <div className='mt-4 d-flex flex-wrap justify-content-between'>
                 {articles.map((article) => <ArticleItem article={article} categories={categories} authors={authors}/>)}
             </div>
         </div>
