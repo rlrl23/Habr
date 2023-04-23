@@ -4,13 +4,13 @@ import {Link} from 'react-router-dom'
 import Categories from "./Categories";
 
 const ArticleItem = ({article, categories, authors}) => {
-    let category = categories.filter((category) => category.id == article.category)[0];
     let author = authors.filter((author) => author.id == article.author)[0];
+    const category = categories.filter((category) => category['id'] === article['category'])[0];
     return (
         <div style={{width: 550}}>
             <div className="card">
                 <div className="card-header">
-                    <span className="badge text-bg-secondary">{category.name}</span><br/>
+                    <span className="badge text-bg-secondary">{category['name']}</span><br/>
                 </div>
                 <div className="card-body overflow-auto" style={{height: 200}}>
                     <h5 className="card-title"><Link className='title' to={`/article/${article.id}`}> {article.title}</Link></h5>
