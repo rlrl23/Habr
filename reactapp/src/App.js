@@ -78,20 +78,23 @@ class App extends React.Component {
                     <Header></Header>
                     <div className='body-container mx-auto pt-3'>
                         <Routes>
-                            <Route exact path='/' element={<ArticleList articles={this.state.articles}
+                            <Route exact path='/' element={<ArticleList
+                                                                        articles={this.state.articles}
                                                                         categories={this.state.categories}
                                                                         authors={this.state.authors}/>}/>
-                            <Route path='/:category_slug' element={<ArticleList articles={this.state.articles}
-                                                                                categories={this.state.categories}
-                                                                                authors={this.state.authors}/>}/>
-                            <Route path='/article/:id' element={<ArticleDetail articles={this.state.articles}
-                                                                               comments={this.state.comments}
-                                                                               categories={this.state.categories}
-                                                                               authors={this.state.authors}/>}/>
+                            <Route path='/:category_slug' element={<ArticleList
+                                                                        articles={this.state.articles}
+                                                                        categories={this.state.categories}
+                                                                        authors={this.state.authors}/>}/>
+                            <Route path='/article/:id' element={<ArticleDetail
+                                                                        articles={this.state.articles}
+                                                                        comments={this.state.comments}
+                                                                        categories={this.state.categories}
+                                                                        authors={this.state.authors}/>}/>
                             <Route path='/profile' element={<Profile/>}/>
                         </Routes>
-                        <Footer/>
                     </div>
+                <Footer/>
                 </BrowserRouter>
             </div>
         )

@@ -1,11 +1,16 @@
+import './Styles.css'
+
 const today = new Date();
 const year = today.getFullYear()
 
 const Footer = () => {
     return (
-        <footer className='mt-5'>
-            <p>©{year} Okay Habr | Все права защищены</p>
-        </footer>
+        <div class="footer">
+            <div class="footer_bottom_item">
+                <p>© {year} Okay Habr</p>
+                <p>Группа GBdev_1_OKAYGEEK | Все права защищены</p>
+            </div>
+        </div>
     )
 }
 export default Footer
