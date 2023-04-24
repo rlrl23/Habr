@@ -6,9 +6,11 @@ import axios from "axios";
 import Menu from "./components/Menu";
 import Footer from "./components/Footer";
 import ArticleDetail from "./components/Article_detail.js";
-import { BrowserRouter, Route, Routes, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Switch, Link } from "react-router-dom";
 import Header from "./components/Header";
 import Profile from "./components/Profile";
+import LoginForm from "./components/Auth";
+import Cookies from "universal-cookie";
 
 class App extends React.Component {
   constructor(props) {
@@ -18,12 +20,57 @@ class App extends React.Component {
       categories: [],
       comments: [],
       authors: [],
+      token: "",
     };
   }
 
-  componentDidMount() {
+  get_token(username, password) {
+    const data = { username: username, password: password };
     axios
-      .get("http://127.0.0.1:8000/articles/")
+      .post("http://127.0.0.1:8000/api-token-auth/", data)
+      .then((response) => {
+        this.set_token(response.data["token"]);
+      })
+      .catch((error) => alert("Неверный пароль или логин"));
+  }
+
+  set_token(token) {
+
+    const cookies = new Cookies();
+    cookies.set("token", token);
+    this.setState({ token: token }, () => this.load_data());
+
+  }
+
+  is_auth() {
+    return !!this.state.token;
+  }
+
+  logout() {
+    this.set_token("");
+  }
+
+  get_headers() {
+    let headers = {
+      'Content-Type': 'application/json'
+    }
+    if (this.is_auth()) {
+      headers['Authorization'] = 'Token ' + this.state.token
+    }
+    return headers
+  }
+
+  get_token_from_storage() {
+    const cookies = new Cookies()
+    const token = cookies.get('token')
+    this.setState({ token: token }, () => this.load_data())
+  }
+
+  load_data() {
+    const headers = this.get_headers()
+
+    axios
+      .get("http://127.0.0.1:8000/articles/", { headers: headers })
       .then((response) => {
         const articles = response.data;
         this.setState({ articles: articles });
@@ -31,7 +78,7 @@ class App extends React.Component {
       .catch((error) => console.log(error));
 
     axios
-      .get("http://127.0.0.1:8000/categories/")
+      .get("http://127.0.0.1:8000/categories/", { headers: headers })
       .then((response) => {
         const categories = response.data;
         this.setState({ categories: categories });
@@ -39,7 +86,7 @@ class App extends React.Component {
       .catch((error) => console.log(error));
 
     axios
-      .get("http://127.0.0.1:8000/authors/")
+      .get("http://127.0.0.1:8000/authors/", { headers: headers })
       .then((response) => {
         const authors = response.data;
         this.setState({ authors: authors });
@@ -47,7 +94,7 @@ class App extends React.Component {
       .catch((error) => console.log(error));
 
     axios
-      .get("http://127.0.0.1:8000/comments/")
+      .get("http://127.0.0.1:8000/comments/", { headers: headers })
       .then((response) => {
         const comments = response.data;
         this.setState({ comments: comments });
@@ -55,12 +102,16 @@ class App extends React.Component {
       .catch((error) => console.log(error));
 
     axios
-      .get("http://127.0.0.1:8000/likes/")
+      .get("http://127.0.0.1:8000/likes/", { headers: headers })
       .then((response) => {
         const likes = response.data;
         this.setState({ likes: likes });
       })
       .catch((error) => console.log(error));
+  }
+
+  componentDidMount() {
+    this.get_token_from_storage();
   }
 
   render() {
@@ -69,6 +120,7 @@ class App extends React.Component {
         <BrowserRouter>
           <Header></Header>
           <div className="body-container mx-auto pt-3">
+
             <Routes>
               <Route
                 exact
@@ -81,6 +133,19 @@ class App extends React.Component {
                   />
                 }
               />
+
+              <Route
+                exact
+                path="/login"
+                element={
+                  <LoginForm
+                    get_token={(username, password) =>
+                      this.get_token(username, password)
+                    }
+                  />
+                }
+              />
+
               <Route
                 path="/:category_slug"
                 element={

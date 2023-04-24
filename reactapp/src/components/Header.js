@@ -1,9 +1,9 @@
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Header = () => {
     return (
         <div id='my_header'
-             className='bg-primary w-100 d-flex py-2 px-4 align-items-center justify-content-between'>
+            className='bg-primary w-100 d-flex py-2 px-4 align-items-center justify-content-between'>
             <Link to='/'>
                 <div className='d-flex text-light'>
                     <div><i className="bi bi-braces"></i></div>
@@ -16,7 +16,9 @@ const Header = () => {
                 <Link to='/profile'>
                     <div title={'Личный кабинет'} className='text-light ms-4'><i className="bi bi-person"></i></div>
                 </Link>
-                <div className='text-light ms-4'><i className="bi bi-box-arrow-left"></i></div>
+                <Link to='/login'>
+                    <div className='text-light ms-4'><i className="bi bi-box-arrow-left"></i></div>
+                </Link>
             </div>
         </div>
     )
