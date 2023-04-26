@@ -1,0 +1,156 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.footer {
+    margin-top: 20px;
+    height: 70px;
+    background: #0f71f1;
+    box-sizing: border-box;
+}
+
+.footer_bottom_item {
+    margin-top: 20px;
+    padding-top: 20px;
+    padding-left: 40px;
+    font-size: 16px;
+    line-height: 5px;
+    color: #ffffff;
+}
+
+.btn1 {
+    border-radius: 10px;
+    height: -webkit-fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    display: inline-flex;
+    background-color: #0f71f1;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    align-items: center;
+    padding: 0px 0px;
+    margin: 0px 20px 0px 0px;
+    color: #ffffff;
+    width: 23%;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.btn1::before {
+    content: " ";
+    position: absolute;
+    /*top: 0;
+    left: 0;*/
+    height: 92%;
+    width: 92%;
+    z-index: -1;
+    transition: 0.2s;
+    border-radius: 10px;
+    color: #ffffff;
+
+}
+
+.btn1:hover::before {
+    background: #0f71f1;
+    box-shadow: 0px 3px 10px 0px black;
+    transform: scale(1.2);
+    color: #ffffff;
+}
+
+.p1 {
+    color: #ffffff;
+    text-decoration: none;
+    padding-top: 13px;
+}
+
+.p1:visited {
+    color: #ffffff;
+}
+
+.p1:hover {
+    color: #ffffff;
+}
+
+.button {
+    background-color: #ffffff;
+    padding: 10px;
+    width: 100%;
+    border-style: none;
+}
+
+.card-title1 {
+    color: #021d25;
+    /* Цвет обычной ссылки */
+    position: relative;
+    cursor: pointer;
+    text-decoration: none;
+    /* Убираем подчеркивание */
+}
+
+.card-title1:after {
+    content: "";
+    display: block;
+    position: absolute;
+    right: 0;
+    bottom: -3px;
+    width: 0;
+    height: 2px;
+    /* Высота линии */
+    background-color: rgb(116, 102, 102);
+    /* Цвет подчеркивания при исчезании линии*/
+    transition: width 0.5s;
+    /* Время эффекта */
+}
+
+.card-title1:hover:after {
+    content: "";
+    width: 100%;
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    height: 2px;
+    /* Высота линии */
+    background-color: rgb(167, 4, 4);
+    /* Цвет подчеркивания при появлении линии*/
+    transition: width 0.5s;
+    /* Время эффекта */
+}
+
+.author1 {
+    display: inline-block;
+    color: #1a1452;
+    /* Цвет обычной ссылки */
+    line-height: 1;
+    text-decoration: none;
+    /* Убираем подчеркивание */
+    cursor: pointer;
+}
+
+.author1:after {
+    background-color: rgb(167, 4, 4);
+    /* Цвет линии при наведении на нее курсора мыши */
+    display: block;
+    content: "";
+    height: 2px;
+    /* Высота линии */
+    width: 0%;
+    -webkit-transition: width .3s ease-in-out;
+    -moz--transition: width .3s ease-in-out;
+    transition: width .3s ease-in-out;
+}
+
+.author1:hover:after,
+.author1:focus:after {
+    width: 100%;
+}
+
+.card1 {
+    box-shadow: 0px 3px 5px 0px rgb(71, 77, 87);
+}
