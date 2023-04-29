@@ -26,7 +26,9 @@ class AuthorSerializer(ModelSerializer):
 class ModeratorSerializer(ModelSerializer):
     class Meta:
         model = Moderator
-        fields = ['id','username','first_name','last_name','email','password', 'is_moderator']
+        # fields = ['id','username','first_name','last_name','email','password', 'is_moderator']
+        # fields = ['id','username','first_name','last_name','email','password']
+        fields = '__all__'
 
 
 class CommentSerializer(ModelSerializer):

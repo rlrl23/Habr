@@ -1,10 +1,13 @@
 from django.shortcuts import render
+# from rest_framework.permissions import IsAdminUser
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.mixins import ListModelMixin
 from .serializers import ArticleSerializer, CategorySerializer, CommentSerializer, LikeSerializer, AuthorSerializer, ModeratorSerializer
 from .models import Article, Category, Author, Comment, Like, Moderator
+from .habr_permissions import IsAuthor
 
 class ArticleViewSet(ModelViewSet):
+    permission_classes = [IsAuthor]
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
 
