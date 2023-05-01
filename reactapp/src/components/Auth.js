@@ -1,15 +1,16 @@
 import React from "react";
-
-
+import {useNavigate} from 'react-router-dom';
+import { redirect } from "react-router-dom";
 
 class LoginForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      login: "",
+      username: "",
       password: "",
     };
   }
+
   handleChange(event) {
     this.setState({
       [event.target.name]: event.target.value,
@@ -17,9 +18,9 @@ class LoginForm extends React.Component {
   }
 
   handleSubmit(event) {
-    this.props.get_token(this.state.login, this.state.password);
+    this.props.get_token(this.state.username, this.state.password);
     event.preventDefault();
-    window.location.href = "/";
+//    window.location.href = "/";
   }
 
   render() {
@@ -29,15 +30,15 @@ class LoginForm extends React.Component {
         <form className="mt-4 mb-3" onSubmit={(event) => this.handleSubmit(event)}>
           <div className="row g-3 mb-3">
             <div className="col-5">
-              <label htmlFor="login" className="form-label"><strong>Nickname</strong></label>
-              <input type="text" name="login" className="form-control"
+              <label htmlFor="login" className="form-label"><strong>Имя пользователя</strong></label>
+              <input type="text" name="username" className="form-control"
                 value={this.state.login}
-                placeholder="login" onChange={(event) => this.handleChange(event)} />
+                placeholder="username" onChange={(event) => this.handleChange(event)} />
             </div>
           </div>
           <div className="row g-3 mb-3">
             <div className="col-5">
-              <label htmlFor="password" className="form-label"><strong>Password</strong></label>
+              <label htmlFor="password" className="form-label"><strong>Пароль</strong></label>
               <input type="password" name="password" className="form-control"
                 value={this.state.password}
                 placeholder="password" onChange={(event) => this.handleChange(event)} />
