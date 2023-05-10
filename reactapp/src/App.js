@@ -67,14 +67,12 @@ class App extends React.Component {
   get_token_from_storage() {
     const cookies = new Cookies()
     const token = cookies.get('token')
-    this.setState({ token: token }, () => this.load_data())
+    const id = cookies.get('id')
+    this.setState({ token: token, id: id }, () => this.load_data())
   }
 
   write_comment(text, article, parent_id=null){
-  const data = { text: text,
-  user: 2,
-//  this.state.id,
-  article: article, parent_id: parent_id};
+  const data = { text: text, user: this.state.id, article: article, parent_id: parent_id};
   axios
       .post("http://127.0.0.1:8000/comments/", data, {headers: this.get_headers()})
       .then((response) => {
@@ -82,6 +80,24 @@ class App extends React.Component {
       })
       .catch((error) => alert(error));
   }
+
+    like(to_user=null, to_comment=null, to_article=null){
+    const data = { from_user: this.state.id,
+                    to_user: to_user,
+                    to_comment: to_comment,
+                    to_article:to_article,
+    };
+    console.log('like data', data);
+    axios
+      .post("http://127.0.0.1:8000/likes/", data, {headers: this.get_headers()})
+      .then((response) => {
+        this.load_data();
+      })
+      .catch((error) => alert(error));
+
+//    console.log('like data', data);
+//    alert('Liked');
+    }
 
   load_data() {
     const headers = this.get_headers()
@@ -182,6 +198,7 @@ class App extends React.Component {
                     comments={this.state.comments}
                     is_auth={() =>this.is_auth()}
                     write_comment={(text, article, parent_id)=> this.write_comment(text, article, parent_id)}
+                    like={(to_user, to_comment, to_article)=> this.like(to_user, to_comment, to_article)}
                   />
                 }
               />
