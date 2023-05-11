@@ -10,10 +10,6 @@ from rest_framework import generics, status
 from .serializers import ArticleSerializer, CommentListSerializer, ArticlesDetailSerializer, CategorySerializer, CommentSerializer, LikeSerializer, AuthorSerializer, ModeratorSerializer, ArticlesListSerializer
 from .models import Article, Category, Author, Comment, Like, Moderator
 
-class ArticlesList(generics.ListAPIView):
-    queryset = Article.objects.all()
-    serializer_class = ArticlesListSerializer
-
 class ArticleViewSet(ModelViewSet):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
