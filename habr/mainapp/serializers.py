@@ -28,9 +28,15 @@ class CommentListSerializer(ModelSerializer):
     created_at = DateTimeField(format='%H-%M  %d.%m.%Y', default=datetime.datetime.now())
     updated_at = DateTimeField(format='%H-%M  %d.%m.%Y', default=datetime.datetime.now())
     user = StringRelatedField(read_only=True)
+    liked_comment = SerializerMethodField()
+
+    def get_liked_comment(self, instance):
+        return instance.liked_comment.count()
+
     class Meta:
         model = Comment
         fields = '__all__'
+
 class CommentSerializer(ModelSerializer):
     created_at = DateTimeField(format='%H-%M  %d.%m.%Y', default=datetime.datetime.now())
     updated_at = DateTimeField(format='%H-%M  %d.%m.%Y', default=datetime.datetime.now())

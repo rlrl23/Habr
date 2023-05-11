@@ -3,24 +3,6 @@ import withRouter from './withRouter';
 import {useParams, } from 'react-router-dom'
 import axios from "axios";
 
-const CommentItem = ({comment}) => {
-    return (
-        <div className="card mb-3">
-            <div className="card-body">
-                <div>
-                    <strong>{comment.user}</strong>
-                    <span className='mx-2'>{comment['created_at']}</span>
-                    <span className='text-danger'>1</span>
-                    <i className="ms-2 me-4 bi bi-heart-fill text-danger"></i>
-                    <div>
-                        {comment.text}
-                    </div>
-                </div>
-            </div>
-        </div>
-    )
-}
-
 class ArticleDetail extends React.Component {
   constructor(props) {
     super(props);
@@ -62,6 +44,28 @@ componentDidMount() {
     this.props.write_comment(this.state.my_comment, this.state.article_id, this.state.parent);
   }
 
+  set_like(to_user, to_comment, to_article, likes_count){
+    this.props.like(to_user, to_comment, to_article);
+    if (to_article){
+    this.state.article.liked_article=likes_count+1;}
+    else {
+    window.location.reload(false);
+    }}
+
+  answer_comment(author, text, parent){
+    var s = document.getElementById('comment_id');
+    s.innerHTML = author+' : '+ text;
+    document.getElementById('close_button').classList.remove('invisible');
+    this.state.parent=parent;
+  }
+
+  close_answer(){
+   var s = document.getElementById('comment_id');
+    s.innerHTML = '';
+    document.getElementById('close_button').classList.add('invisible');
+    this.state.parent='';
+  }
+
 render(){
 //let comments= this.state.article.comment_article;
 //let comments_count= this.state.article.comment_article;
@@ -91,22 +95,51 @@ console.log('article', this.state.article);
                 </div>
                 <div>
                     <span className='text-danger'>{this.state.article.liked_article}</span>
-                    <i onClick={(to_user, to_comment, to_article)=>{this.props.like(to_user=null, to_comment=null,to_article=this.state.article.id)}} className="ms-2 me-4 bi bi-heart-fill text-danger"></i>
+                    {this.props.is_auth() ?
+                    <i onClick={(to_user, to_comment, to_article, likes_count)=>{this.set_like(to_user=null, to_comment=null,to_article=this.state.article.id, likes_count=this.state.article.liked_article)}} className="ms-2 me-4 bi bi-heart-fill text-danger"></i>
+                    :
+                    (<i className="ms-2 me-4 bi bi-heart-fill text-danger"></i>)}
+
                     <span>{this.state.article.comment_article}</span>
                    <i className="ms-2 bi bi-chat-right-text"></i>
                 </div>
             </div>
             <h4 className='mt-4 mb-3'>Комментарии</h4>
             <div>
-                {this.state.comments.map((comment) => <CommentItem comment={comment} />)}
+                {this.state.comments.map((comment) =>
+                 <div className="card mb-3">
+            <div className="card-body">
+                <div>
+                    <strong>{comment.user}</strong>
+                    <span className='mx-2'>{comment['created_at']}</span>
+                    <span className='text-danger'>{comment.liked_comment}</span>
+                    {this.props.is_auth() ?
+                    <i onClick={(to_user, to_comment, to_article, likes_count)=>{this.set_like(to_user=null, to_comment=comment.id, to_article=null, likes_count=comment.liked_comment)}} className="ms-2 me-4 bi bi-heart-fill text-danger"></i>
+                    :
+                    <i className="ms-2 me-4 bi bi-heart-fill text-danger"></i>}
+                    {this.props.is_auth()&&
+                    <span onClick={(author, text, parent)=>{this.answer_comment(author=comment.user, text=comment.text, parent=comment.id ) }} className="badge text-bg-secondary float-end">Ответить</span>
+                    }
+                    <div>
+                        {comment.text}
+                    </div>
+                </div>
+            </div>
+        </div>)}
+
+
 {this.props.is_auth()&&
 <form className="mt-4 mb-3" onSubmit={(event) => this.handleSubmit(event)}>
   <div className="row g-3 mb-3">
     <div className="col-5">
-      <label htmlFor="login" className="form-label"><strong>Прокомментировать</strong></label>
-      <input type="text" name="my_comment" className="form-control"
+     <strong  >Прокомментировать</strong>
+     <div >
+     <button id='close_button' onClick={()=>{this.close_answer()}} type="button" class="btn-close float-end invisible" aria-label="Close"></button>
+     <p id="comment_id"></p>
+     </div>
+      <textarea type="text" name="my_comment" className="form-control"
         value={this.state.my_comment}
-        placeholder="" onChange={(event) => this.handleChange(event)} />
+        placeholder="" onChange={(event) => this.handleChange(event)}> </textarea>
     </div>
   </div>
   <input type="submit" value="Отправить" className='btn btn-primary' />
