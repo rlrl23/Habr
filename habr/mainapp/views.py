@@ -1,12 +1,12 @@
 from django.contrib.auth.hashers import make_password
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
 from rest_framework.schemas import coreapi
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin
-from rest_framework import generics
+from rest_framework import generics, status
 from .serializers import ArticleSerializer, CommentListSerializer, ArticlesDetailSerializer, CategorySerializer, CommentSerializer, LikeSerializer, AuthorSerializer, ModeratorSerializer, ArticlesListSerializer
 from .models import Article, Category, Author, Comment, Like, Moderator
 
@@ -70,6 +70,29 @@ class CommentViewSet(ModelViewSet):
 class LikeViewSet(ModelViewSet):
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        from_user=request.data['from_user']
+
+        if request.data['to_user']:
+            to_user=request.data['to_user']
+            likes= Like.objects.filter(from_user=from_user, to_user=to_user)
+        elif request.data['to_comment']:
+            to_comment = request.data['to_comment']
+            likes=Like.objects.filter(from_user=from_user, to_comment=to_comment)
+        elif request.data['to_article']:
+            to_article = request.data['to_article']
+            likes=Like.objects.filter(from_user=from_user,to_article=to_article)
+        else:
+            return Response('Лайк должен быть кому-то адресован', status=status.HTTP_400_BAD_REQUEST)
+        if likes:
+            return Response('Вы уже поставили лайк', status=status.HTTP_406_NOT_ACCEPTABLE)
+        else:
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 class MyToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
