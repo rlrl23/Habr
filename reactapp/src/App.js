@@ -103,7 +103,7 @@ class App extends React.Component {
     const headers = this.get_headers()
 
     axios
-      .get("http://127.0.0.1:8000/list/articles", { headers: headers })
+      .get("http://127.0.0.1:8000/articles/", { headers: headers })
       .then((response) => {
         const articles = response.data;
         this.setState({ articles: articles });

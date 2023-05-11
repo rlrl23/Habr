@@ -32,7 +32,6 @@ router.register('likes', LikeViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
-    path('list/articles', ArticlesList.as_view()),
     path('api-auth/', include('rest_framework.urls')),
     path('api-token-auth/', MyToken.as_view()),
 ]

@@ -19,7 +19,7 @@ class ArticleViewSet(ModelViewSet):
     serializer_class = ArticleSerializer
 
     def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
+        queryset = self.queryset.filter(is_approved=True, is_published=True).order_by('-updated_at').exclude(is_deleted=True)
 
         page = self.paginate_queryset(queryset)
         if page is not None:
