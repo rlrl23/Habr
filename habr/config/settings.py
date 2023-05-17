@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-7##(*l3mx+$rji#zw_3-6@22a*p2m50&+38prf($=xh(1v*p^4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.0']
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -77,15 +77,26 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Rest_framework settings
 
+# отключение BrowsableAPI на продакшене:
+DEFAULT_RENDERER_CLASSES = (
+    'rest_framework.renderers.JSONRenderer',
+)
+
+if DEBUG:
+    DEFAULT_RENDERER_CLASSES = DEFAULT_RENDERER_CLASSES + (
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    )
+
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
+    'DEFAULT_RENDERER_CLASSES': DEFAULT_RENDERER_CLASSES,
+    'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
-        ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
+        ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
-        ],
+    ),
     }
 
 
@@ -150,3 +161,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # AUTH_USER_MODEL = 'mainapp.User'
 # AUTH_USER_MODEL = 'mainapp.CustomUser'
+
+LOGIN_REDIRECT_URL = '/'

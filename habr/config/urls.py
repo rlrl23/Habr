@@ -17,10 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from mainapp.views import ArticleViewSet, CategoryViewSet, AuthorViewSet, CommentViewSet, LikeViewSet, ModeratorViewSet
+from mainapp.views import ArticleViewSet, CategoryViewSet, AuthorViewSet, \
+    CommentViewSet, LikeViewSet, ModeratorViewSet, UserViewSet
 from rest_framework.authtoken import views
 
 router = DefaultRouter()
+router.register('users', UserViewSet)
 router.register('articles', ArticleViewSet)
 router.register('categories', CategoryViewSet)
 router.register('authors', AuthorViewSet)
@@ -28,6 +30,7 @@ router.register('moderators', ModeratorViewSet)
 router.register('comments', CommentViewSet)
 router.register('likes', LikeViewSet)
 
+# print(router.urls)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
