@@ -6,7 +6,7 @@ import Categories from "./Categories";
 const ArticleItem = ({ article}) => {
 
     return (
-        <div style={{ width: 550 }}>
+        <div className="mt-4" style={{ width: 550 }}>
             <div className="card card1">
                 <div className="card-header">
                     <span className="badge text-bg-secondary">{article.category.name}</span><br />
@@ -42,7 +42,7 @@ console.log('articles', articles);
     return (
         <div>
             <Categories categories={categories} />
-            <div className='mt-4 d-flex flex-wrap justify-content-between'>
+            <div className='mt-2 d-flex flex-wrap justify-content-between'>
                 {articles.map((article) => <ArticleItem article={article}/>)}
             </div>
         </div>

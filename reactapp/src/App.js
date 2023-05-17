@@ -13,6 +13,7 @@ import LoginForm from "./components/Auth";
 import Cookies from "universal-cookie";
 import ArticleCreate from "./components/ArticleCreate";
 
+
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -84,6 +85,30 @@ class App extends React.Component {
                 this.load_data();
             })
             .catch((error) => alert(error));
+    }
+
+    async create_article(title, category, short_description, full_description, is_draft) {
+        if (!this.state.id) {
+            console.log('Не обнаружен айди автора')
+            return 1
+        }
+        const data = {
+            title: title,
+            category: Number(category),
+            short_description: short_description,
+            full_description: full_description,
+            is_published: !is_draft,
+            author: Number(this.state.id)
+        }
+        let err = 0
+        try {
+            await axios.post(`http://127.0.0.1:8000/articles/`, data, {headers: this.get_headers()});
+            this.load_data();
+        } catch (error) {
+            console.log(error)
+            err = 1
+        }
+        return err
     }
 
     load_data() {
@@ -189,9 +214,14 @@ class App extends React.Component {
                                 }
                             />
                             <Route path="/profile" element={<Profile/>}/>
-                            {this.is_auth() ? <Route path="/create_article"
-                                                     element={<ArticleCreate
-                                                         categories={this.state.categories}/>}/> : null}
+                            {this.is_auth() ?
+                                <Route path="/create_article"
+                                       element={<ArticleCreate
+                                           categories={this.state.categories}
+                                           create_article={(title, category, short_description, full_description,
+                                                            is_draft) => this.create_article(title, category,
+                                               short_description, full_description, is_draft)}/>}/>
+                                : null}
                         </Routes>
                         <Footer/>
                     </div>
