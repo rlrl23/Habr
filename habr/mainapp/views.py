@@ -7,16 +7,24 @@ from rest_framework.schemas import coreapi
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin
 from rest_framework import generics
-from .serializers import ArticleSerializer, CommentListSerializer, ArticlesDetailSerializer, CategorySerializer, CommentSerializer, LikeSerializer, AuthorSerializer, ModeratorSerializer, ArticlesListSerializer
+from .serializers import ArticleSerializer, CommentListSerializer, ArticlesDetailSerializer, CategorySerializer, \
+    CommentSerializer, LikeSerializer, AuthorSerializer, ModeratorSerializer, ArticlesListSerializer, \
+    ArticlesCreateSerializer
 from .models import Article, Category, Author, Comment, Like, Moderator
+
 
 class ArticlesList(generics.ListAPIView):
     queryset = Article.objects.all()
     serializer_class = ArticlesListSerializer
 
+
 class ArticleViewSet(ModelViewSet):
     queryset = Article.objects.all()
-    serializer_class = ArticleSerializer
+
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return ArticlesCreateSerializer
+        return ArticleSerializer
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -34,6 +42,7 @@ class ArticleViewSet(ModelViewSet):
         serializer = ArticlesDetailSerializer(instance)
         return Response(serializer.data)
 
+
 class CategoryViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -45,11 +54,13 @@ class ModeratorViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(password=make_password(self.request.data['password']))
 
+
 class AuthorViewSet(ModelViewSet):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
     def perform_create(self, serializer):
         serializer.save(password=make_password(self.request.data['password']))
+
 
 
 class CommentViewSet(ModelViewSet):
@@ -60,13 +71,14 @@ class LikeViewSet(ModelViewSet):
     queryset = Like.objects.all()
     serializer_class = LikeSerializer
 
+
 class MyToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key, 'id':user.id})
+        return Response({'token': token.key, 'id': user.id})
 
 
 obtain_auth_token = MyToken.as_view()

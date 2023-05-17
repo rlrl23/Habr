@@ -6,63 +6,71 @@ import axios from "axios";
 import Menu from "./components/Menu";
 import Footer from "./components/Footer";
 import ArticleDetail from "./components/Article_detail.js";
-import { BrowserRouter, Route, Routes, Switch, Link, Navigate } from "react-router-dom";
+import {BrowserRouter, Route, Routes, Switch, Link, Navigate} from "react-router-dom";
 import Header from "./components/Header";
 import Profile from "./components/Profile";
 import LoginForm from "./components/Auth";
 import Cookies from "universal-cookie";
+import ArticleCreate from "./components/ArticleCreate";
+
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      articles: [],
-      categories: [],
-      comments: [],
-      likes:[],
-      authors: [],
-      token: "",
-      id:"",
-    };
-  }
-
-  get_token(username, password) {
-    const data = { username: username, password: password };
-
-    axios
-      .post("http://127.0.0.1:8000/api-token-auth/", data)
-      .then((response) => {
-      console.log('response.data', response.data);
-        this.set_token(response.data["token"], response.data['id']);
-      })
-      .catch((error) => alert("Неверный пароль или логин"));
-  }
-
-  set_token(token, id) {
-
-    const cookies = new Cookies();
-    cookies.set("token", token);
-    cookies.set('id', id);
-    this.setState({ token: token, id:id }, () => this.load_data());
-  }
-
-  is_auth() {
-    return !!this.state.token;
-  }
-
-  logout() {
-    this.set_token("");
-  }
-
-  get_headers() {
-    let headers = {
-      'Content-Type': 'application/json'
+    constructor(props) {
+        super(props);
+        this.state = {
+            articles: [],
+            categories: [],
+            comments: [],
+            likes: [],
+            authors: [],
+            token: "",
+            id: "",
+        };
     }
-    if (this.is_auth()) {
-      headers['Authorization'] = 'Token ' + this.state.token
+
+    get_token(username, password) {
+        const data = {username: username, password: password};
+
+        axios
+            .post("http://127.0.0.1:8000/api-token-auth/", data)
+            .then((response) => {
+                console.log('response.data', response.data);
+                this.set_token(response.data["token"], response.data['id']);
+            })
+            .catch((error) => alert("Неверный пароль или логин"));
     }
-    return headers
-  }
+
+    set_token(token, id) {
+
+        const cookies = new Cookies();
+        cookies.set("token", token);
+        cookies.set('id', id);
+        this.setState({token: token, id: id}, () => this.load_data());
+    }
+
+    is_auth() {
+        return !!this.state.token;
+    }
+
+    logout() {
+        this.set_token("");
+    }
+
+    get_headers() {
+        let headers = {
+            'Content-Type': 'application/json'
+        }
+        if (this.is_auth()) {
+            headers['Authorization'] = 'Token ' + this.state.token
+        }
+        return headers
+    }
+
+    get_token_from_storage() {
+        const cookies = new Cookies()
+        const token = cookies.get('token')
+        this.setState({token: token}, () => this.load_data())
+    }
 
   get_token_from_storage() {
     const cookies = new Cookies()
@@ -143,6 +151,30 @@ class App extends React.Component {
       .catch((error) => console.log(error));
   }
 
+  async create_article(title, category, short_description, full_description, is_draft) {
+        if (!this.state.id) {
+            console.log('Не обнаружен айди автора')
+            return 1
+        }
+        const data = {
+            title: title,
+            category: Number(category),
+            short_description: short_description,
+            full_description: full_description,
+            is_published: !is_draft,
+            author: Number(this.state.id)
+        }
+        let err = 0
+        try {
+            await axios.post(`http://127.0.0.1:8000/articles/`, data, {headers: this.get_headers()});
+            this.load_data();
+        } catch (error) {
+            console.log(error)
+            err = 1
+        }
+        return err
+    }
+
   componentDidMount() {
     this.get_token_from_storage();
   }
@@ -203,6 +235,14 @@ class App extends React.Component {
                 }
               />
               <Route path="/profile" element={<Profile />} />
+              {this.is_auth() ?
+                                <Route path="/create_article"
+                                       element={<ArticleCreate
+                                           categories={this.state.categories}
+                                           create_article={(title, category, short_description, full_description,
+                                                            is_draft) => this.create_article(title, category,
+                                               short_description, full_description, is_draft)}/>}/>
+                                : null}
             </Routes>
             <Footer />
           </div>
