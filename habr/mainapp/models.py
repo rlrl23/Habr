@@ -1,24 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, User
+from django.contrib.auth.models import User
 from autoslug.fields import AutoSlugField
 
-
-# class CustomUser(AbstractUser):
-#     # password=models.CharField(max_length=14)
-#     is_moderator = models.BooleanField(default=False)
-#
-#     USERNAME_FIELD = 'username'
-#     EMAIL_FIELD = 'email'
-#     REQUIRED_FIELDS = []
-#
-#     def __str__(self):
-#         return self.username
-
-
-# class Moderator(User):
-#
-#     def __str__(self):
-#         return self.username
 
 class Moderator(models.Model):
     user_moder = models.ForeignKey(User, on_delete=models.CASCADE,
@@ -30,28 +13,17 @@ class Moderator(models.Model):
                             blank=True, null=True)
 
     def __str__(self):
-        # return self.user_moder
         return self.user_moder.username
 
 
 class Author(models.Model):
     author = models.OneToOneField(User, on_delete=models.CASCADE,
                                   verbose_name='Автор',
-                                  related_name='user_author',
-                                  # primary_key=True
+                                  related_name='user_author'
                                   )
 
     def __str__(self):
         return self.author.username
-
-
-# class Author(User):
-#     date_of_birth = models.DateField(null=True, blank=True)
-#     description = models.TextField()
-#     is_banned = models.BooleanField(default=False)
-#
-#     def __str__(self):
-#         return self.username
 
 
 class Category(models.Model):
@@ -60,15 +32,6 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
-
-
-# class Category(models.Model):
-#     name = models.CharField(verbose_name='Категория', max_length=30)
-#     slug = AutoSlugField(populate_from='name', editable=True, unique=True)
-#     moderators = models.ManyToManyField(User, verbose_name='Модератор', related_name='moderators', blank=True)
-#
-#     def __str__(self):
-#         return self.name
 
 
 class Article(models.Model):
