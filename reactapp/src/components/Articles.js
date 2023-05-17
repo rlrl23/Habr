@@ -1,16 +1,15 @@
-import React from 'react'
-import { useParams } from 'react-router-dom'
-import { Link } from 'react-router-dom'
-import Categories from "./Categories"
+import React from 'react';
+import { useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import Categories from "./Categories";
 
-const ArticleItem = ({ article, categories, authors }) => {
-    let author = authors.filter((author) => author.id == article.author)[0];
-    const category = categories.filter((category) => category['id'] === article['category'])[0];
+const ArticleItem = ({ article}) => {
+
     return (
         <div style={{ width: 550 }}>
             <div className="card card1">
                 <div className="card-header">
-                    <span className="badge text-bg-secondary">{category['name']}</span><br />
+                    <span className="badge text-bg-secondary">{article.category.name}</span><br />
                 </div>
                 <div className="card-body overflow-auto" style={{ height: 200 }}>
                     <h5 className="card-title1"><Link className='title' to={`/article/${article.id}`}> {article.title}</Link></h5>
@@ -19,11 +18,11 @@ const ArticleItem = ({ article, categories, authors }) => {
                     </p>
                 </div>
                 <div className="card-footer text-body-secondary d-flex justify-content-between">
-                    <div>{article['created_at']} <strong className="author1">{author.username}</strong></div>
+                    <div>{article['created_at']} <strong className="author1">{article.author}</strong></div>
                     <div>
-                        <span className='text-danger'>4</span>
+                        <span className='text-danger'>{article.liked_article}</span>
                         <i className="ms-2 me-4 bi bi-heart-fill text-danger"></i>
-                        <span>5</span>
+                        <span>{article.comment_article}</span>
                         <i className="ms-2 bi bi-chat-right-text"></i>
                     </div>
                 </div>
@@ -32,19 +31,19 @@ const ArticleItem = ({ article, categories, authors }) => {
     )
 }
 
-const ArticleList = ({ articles, categories, authors }) => {
+const ArticleList = ({ articles, categories }) => {
+console.log('articles', articles);
+
     let { category_slug } = useParams();
     if (category_slug) {
-        let category = categories.filter((category) => category.slug == category_slug)[0];
-        let articles_by_cat = articles.filter((article) => article.category == category.id);
-
+        let articles_by_cat = articles.filter((article) => article.category.slug == category_slug);
         articles = articles_by_cat;
     }
     return (
         <div>
             <Categories categories={categories} />
             <div className='mt-4 d-flex flex-wrap justify-content-between'>
-                {articles.map((article) => <ArticleItem article={article} categories={categories} authors={authors} />)}
+                {articles.map((article) => <ArticleItem article={article}/>)}
             </div>
         </div>
     )

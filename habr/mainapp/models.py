@@ -4,20 +4,26 @@ from autoslug.fields import AutoSlugField
 
 
 class User(AbstractUser):
-    password=models.CharField(max_length=14)
+    #password=models.CharField(max_length=14)
     is_moderator = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['password']
 
     def __str__(self):
         return self.username
+    class Meta:
+        verbose_name = "Все пользователи"
+        verbose_name_plural="Все пользователи"
 
 class Moderator(User):
 
     def __str__(self):
         return self.username
+    class Meta:
+        verbose_name = "Модератор"
+        verbose_name_plural = "Модераторы"
 
 class Author(User):
     date_of_birth = models.DateField(null=True, blank=True)
@@ -26,6 +32,10 @@ class Author(User):
 
     def __str__(self):
         return self.username
+
+    class Meta:
+        verbose_name = "Автор"
+        verbose_name_plural = "Авторы"
 
 class Category(models.Model):
     name=models.CharField(verbose_name='Категория', max_length=30)
@@ -51,10 +61,10 @@ class Article(models.Model):
         return self.title
 
 class Comment(models.Model):
-    text=models.TextField(null=False)
+    text=models.TextField(null=False, verbose_name='text')
     user=models.ForeignKey(Author, on_delete=models.CASCADE, null=False, related_name='comment_author',
                     verbose_name='Автор')
-    article= models.ForeignKey(Article, on_delete=models.CASCADE, null=True, related_name='article',
+    article= models.ForeignKey(Article, on_delete=models.CASCADE, null=True, related_name='comment_article',
                     verbose_name='Статья')
     parent_id= models.ForeignKey('self', on_delete=models.CASCADE, null=True, related_name='parent',
                     verbose_name='Родитель')
@@ -65,9 +75,9 @@ class Comment(models.Model):
         return self.text
 
 class Like(models.Model):
-    from_user=models.ForeignKey(Author, on_delete=models.CASCADE, null=False, related_name='from_user')
-    to_user=models.ForeignKey(Author, on_delete=models.CASCADE, null=True, related_name='to_author')
-    to_comment = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True)
-    to_article=models.ForeignKey(Article, on_delete=models.CASCADE, null=True)
+    from_user=models.ForeignKey(Author, on_delete=models.CASCADE, null=False, related_name='like_from')
+    to_user=models.ForeignKey(Author, on_delete=models.CASCADE, null=True, related_name='like_to')
+    to_comment = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True, related_name='liked_comment')
+    to_article=models.ForeignKey(Article, on_delete=models.CASCADE, null=True, related_name='liked_article')
     datetime=models.DateTimeField(auto_now_add=True)
 
