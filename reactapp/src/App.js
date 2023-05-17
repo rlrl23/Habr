@@ -72,22 +72,86 @@ class App extends React.Component {
         this.setState({token: token}, () => this.load_data())
     }
 
-    write_comment(text, article, parent_id = null) {
-        const data = {
-            text: text,
-            user: 2,
-//  this.state.id,
-            article: article, parent_id: parent_id
-        };
-        axios
-            .post("http://127.0.0.1:8000/comments/", data, {headers: this.get_headers()})
-            .then((response) => {
-                this.load_data();
-            })
-            .catch((error) => alert(error));
+  get_token_from_storage() {
+    const cookies = new Cookies()
+    const token = cookies.get('token')
+    const id = cookies.get('id')
+    this.setState({ token: token, id: id }, () => this.load_data())
+  }
+
+  write_comment(text, article, parent_id=null){
+  const data = { text: text, user: this.state.id, article: article, parent_id: parent_id};
+  axios
+      .post("http://127.0.0.1:8000/comments/", data, {headers: this.get_headers()})
+      .then((response) => {
+        this.load_data();
+      })
+      .catch((error) => alert(error));
+  }
+
+    like(to_user=null, to_comment=null, to_article=null){
+    const data = { from_user: this.state.id,
+                    to_user: to_user,
+                    to_comment: to_comment,
+                    to_article:to_article,
+    };
+    console.log('like data', data);
+    axios
+      .post("http://127.0.0.1:8000/likes/", data, {headers: this.get_headers()})
+      .then((response) => {
+        this.load_data();
+      })
+      .catch((error) => alert(error));
+
+//    console.log('like data', data);
+//    alert('Liked');
     }
 
-    async create_article(title, category, short_description, full_description, is_draft) {
+  load_data() {
+    const headers = this.get_headers()
+
+    axios
+      .get("http://127.0.0.1:8000/list/articles", { headers: headers })
+      .then((response) => {
+        const articles = response.data;
+        this.setState({ articles: articles });
+      })
+      .catch((error) => console.log(error));
+
+    axios
+      .get("http://127.0.0.1:8000/categories/", { headers: headers })
+      .then((response) => {
+        const categories = response.data;
+        this.setState({ categories: categories });
+      })
+      .catch((error) => console.log(error));
+
+    axios
+      .get("http://127.0.0.1:8000/authors/", { headers: headers })
+      .then((response) => {
+        const authors = response.data;
+        this.setState({ authors: authors });
+      })
+      .catch((error) => console.log(error));
+
+    axios
+      .get("http://127.0.0.1:8000/comments/", { headers: headers })
+      .then((response) => {
+        const comments = response.data;
+        this.setState({ comments: comments });
+      })
+      .catch((error) => console.log(error));
+
+    axios
+      .get("http://127.0.0.1:8000/likes/", { headers: headers })
+      .then((response) => {
+        const likes = response.data;
+        this.setState({ likes: likes });
+      })
+      .catch((error) => console.log(error));
+  }
+
+  async create_article(title, category, short_description, full_description, is_draft) {
         if (!this.state.id) {
             console.log('Не обнаружен айди автора')
             return 1
@@ -111,110 +175,67 @@ class App extends React.Component {
         return err
     }
 
-    load_data() {
-        const headers = this.get_headers()
+  componentDidMount() {
+    this.get_token_from_storage();
+  }
 
-        axios
-            .get("http://127.0.0.1:8000/list/articles", {headers: headers})
-            .then((response) => {
-                const articles = response.data;
-                this.setState({articles: articles});
-            })
-            .catch((error) => console.log(error));
-
-        axios
-            .get("http://127.0.0.1:8000/categories/", {headers: headers})
-            .then((response) => {
-                const categories = response.data;
-                this.setState({categories: categories});
-            })
-            .catch((error) => console.log(error));
-
-        axios
-            .get("http://127.0.0.1:8000/authors/", {headers: headers})
-            .then((response) => {
-                const authors = response.data;
-                this.setState({authors: authors});
-            })
-            .catch((error) => console.log(error));
-
-        axios
-            .get("http://127.0.0.1:8000/comments/", {headers: headers})
-            .then((response) => {
-                const comments = response.data;
-                this.setState({comments: comments});
-            })
-            .catch((error) => console.log(error));
-
-        axios
-            .get("http://127.0.0.1:8000/likes/", {headers: headers})
-            .then((response) => {
-                const likes = response.data;
-                this.setState({likes: likes});
-            })
-            .catch((error) => console.log(error));
-    }
-
-    componentDidMount() {
-        this.get_token_from_storage();
-    }
-
-    render() {
-        console.log('this.state.token', this.state.token);
-        console.log('I am', this.state.id);
-        console.log('Headers', this.get_headers())
-        return (
-            <div>
-                <BrowserRouter>
-                    <Header is_auth={() => this.is_auth()} logout={() => this.logout()}></Header>
-                    <div className="body-container mx-auto pt-3">
-                        <Routes>
-                            <Route
-                                exact
-                                path="/"
-                                element={
-                                    <ArticleList
-                                        articles={this.state.articles}
-                                        categories={this.state.categories}
-                                    />
-                                }
-                            />
-                            <Route
-                                exact
-                                path="/login"
-                                element={
-                                    <LoginForm
-                                        get_token={(username, password) => this.get_token(username, password)}
+  render() {
+  console.log('this.state.token', this.state.token);
+  console.log('I am', this.state.id);
+  console.log('Headers', this.get_headers())
+    return (
+      <div>
+        <BrowserRouter>
+        <Header is_auth={() =>this.is_auth()} logout={()=> this.logout()}></Header>
+          <div className="body-container mx-auto pt-3">
+            <Routes>
+              <Route
+                exact
+                path="/"
+                element={
+                  <ArticleList
+                    articles={this.state.articles}
+                    categories={this.state.categories}
+                  />
+                }
+              />
+        <Route
+                exact
+                path="/login"
+                element={
+                  <LoginForm
+                    get_token={(username, password) => this.get_token(username, password)}
 
 
-                                    />
-                                }
-                            />
+                  />
+                }
+              />
 
 
-                            <Route
-                                path="/:category_slug"
-                                element={
-                                    <ArticleList
-                                        articles={this.state.articles}
-                                        categories={this.state.categories}
-                                        authors={this.state.authors}
-                                    />
-                                }
-                            />
-                            <Route
-                                path="/article/:id"
-                                element={
-                                    <ArticleDetail
-                                        articles={this.state.articles}
-                                        comments={this.state.comments}
-                                        is_auth={() => this.is_auth()}
-                                        write_comment={(text, article, parent_id) => this.write_comment(text, article, parent_id)}
-                                    />
-                                }
-                            />
-                            <Route path="/profile" element={<Profile/>}/>
-                            {this.is_auth() ?
+              <Route
+                path="/:category_slug"
+                element={
+                  <ArticleList
+                    articles={this.state.articles}
+                    categories={this.state.categories}
+                    authors={this.state.authors}
+                  />
+                }
+              />
+              <Route
+                path="/article/:id"
+                element={
+                  <ArticleDetail
+                    articles={this.state.articles}
+                    comments={this.state.comments}
+                    is_auth={() =>this.is_auth()}
+                    write_comment={(text, article, parent_id)=> this.write_comment(text, article, parent_id)}
+                    like={(to_user, to_comment, to_article)=> this.like(to_user, to_comment, to_article)}
+                  />
+                }
+              />
+              <Route path="/profile" element={<Profile />} />
+              {this.is_auth() ?
                                 <Route path="/create_article"
                                        element={<ArticleCreate
                                            categories={this.state.categories}
@@ -222,13 +243,13 @@ class App extends React.Component {
                                                             is_draft) => this.create_article(title, category,
                                                short_description, full_description, is_draft)}/>}/>
                                 : null}
-                        </Routes>
-                        <Footer/>
-                    </div>
-                </BrowserRouter>
-            </div>
-        );
-    }
+            </Routes>
+            <Footer />
+          </div>
+        </BrowserRouter>
+      </div>
+    );
+  }
 }
 
 export default App;
