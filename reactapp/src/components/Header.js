@@ -19,7 +19,9 @@ class Header extends React.Component {
             </Link>
             <div className='d-flex'>
                 <div className='text-light'><i className="bi bi-bell"></i></div>
-                <div className='text-light ms-4'><i className="bi bi-info-circle"></i></div>
+                <Link to='/info'>
+                    <div className='text-light ms-4'><i className="bi bi-info-circle"></i></div>
+                </Link>
                 {this.props.is_auth()?
                 <Link to='/profile'>
                     <div title={'Личный кабинет'} className='text-light ms-4'><i className="bi bi-person"></i></div>
