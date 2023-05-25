@@ -19,7 +19,9 @@ class Header extends React.Component {
                 </NavLink>
                 <div className='d-flex'>
                     <div className='text-light'><i className="bi bi-bell"></i></div>
-                    <div className='text-light ms-4'><i className="bi bi-info-circle"></i></div>
+                    <NavLink to='/info'>
+                        <div className='text-light ms-4'><i className="bi bi-info-circle"></i></div>
+                    </NavLink>
                     {this.props.is_auth() ?
                         <div className='d-flex'>
                             <NavLink to='/profile'>

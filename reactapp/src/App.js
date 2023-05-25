@@ -212,6 +212,7 @@ class App extends React.Component {
                   />
                 }
               />
+              <Route path='/info' element={<InfoPage />} />
               <Route
                 exact
                 path="/register"
@@ -245,7 +246,11 @@ class App extends React.Component {
               <Route path="/profile" element={<Profile />} />
               {this.is_auth() ? <Route path="/create_article"
                 element={<ArticleCreate
-                  categories={this.state.categories} />} /> : null}
+                  categories={this.state.categories}
+                  create_article={(title, category, short_description, full_description,
+                    is_draft) => this.create_article(title, category,
+                      short_description, full_description, is_draft)} />} />
+                : null}
             </Routes>
             <Footer />
           </div>
