@@ -11,6 +11,9 @@ import Header from "./components/Header";
 import Profile from "./components/Profile";
 import LoginForm from "./components/Auth";
 import Cookies from "universal-cookie";
+import ArticleCreate from "./components/ArticleCreate";
+import InfoPage from "./components/InfoPage";
+
 import RegisterUserForm from "./components/Register";
 
 class App extends React.Component {
@@ -71,19 +74,40 @@ class App extends React.Component {
     this.setState({ token: token }, () => this.load_data())
   }
 
+  get_token_from_storage() {
+    const cookies = new Cookies()
+    const token = cookies.get('token')
+    const id = cookies.get('id')
+    this.setState({ token: token, id: id }, () => this.load_data())
+  }
+
   write_comment(text, article, parent_id = null) {
-    const data = {
-      text: text,
-      user: 2,
-      //  this.state.id,
-      article: article, parent_id: parent_id
-    };
+    const data = { text: text, user: this.state.id, article: article, parent_id: parent_id };
     axios
       .post("http://127.0.0.1:8000/comments/", data, { headers: this.get_headers() })
       .then((response) => {
         this.load_data();
       })
       .catch((error) => alert(error));
+  }
+
+  like(to_user = null, to_comment = null, to_article = null) {
+    const data = {
+      from_user: this.state.id,
+      to_user: to_user,
+      to_comment: to_comment,
+      to_article: to_article,
+    };
+    console.log('like data', data);
+    axios
+      .post("http://127.0.0.1:8000/likes/", data, { headers: this.get_headers() })
+      .then((response) => {
+        this.load_data();
+      })
+      .catch((error) => alert(error));
+
+    //    console.log('like data', data);
+    //    alert('Liked');
   }
 
   load_data() {
@@ -128,6 +152,29 @@ class App extends React.Component {
         this.setState({ likes: likes });
       })
       .catch((error) => console.log(error));
+  }
+
+  async create_article(title, category, short_description, full_description, is_draft) {
+    if (!this.state.id) {
+      return 1
+    }
+    const data = {
+      title: title,
+      category: Number(category),
+      short_description: short_description,
+      full_description: full_description,
+      is_published: !is_draft,
+      author: Number(this.state.id)
+    }
+    let err = 0
+    try {
+      await axios.post(`http://127.0.0.1:8000/articles/`, data, { headers: this.get_headers() });
+      this.load_data();
+    } catch (error) {
+      console.log(error)
+      err = 1
+    }
+    return err
   }
 
   componentDidMount() {

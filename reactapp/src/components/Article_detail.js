@@ -91,7 +91,7 @@ console.log('article', this.state.article);
                 </div>
                 <div>
                     <span className='text-danger'>{this.state.article.liked_article}</span>
-                    <i className="ms-2 me-4 bi bi-heart-fill text-danger"></i>
+                    <i onClick={(to_user, to_comment, to_article)=>{this.props.like(to_user=null, to_comment=null,to_article=this.state.article.id)}} className="ms-2 me-4 bi bi-heart-fill text-danger"></i>
                     <span>{this.state.article.comment_article}</span>
                    <i className="ms-2 bi bi-chat-right-text"></i>
                 </div>

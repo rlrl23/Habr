@@ -4,20 +4,26 @@ from autoslug.fields import AutoSlugField
 
 
 class User(AbstractUser):
-    password=models.CharField(max_length=14)
+    #password=models.CharField(max_length=14)
     is_moderator = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['password']
 
     def __str__(self):
         return self.username
+    class Meta:
+        verbose_name = "Все пользователи"
+        verbose_name_plural="Все пользователи"
 
 class Moderator(User):
 
     def __str__(self):
         return self.username
+    class Meta:
+        verbose_name = "Модератор"
+        verbose_name_plural = "Модераторы"
 
 class Author(User):
     date_of_birth = models.DateField(null=True, blank=True)
@@ -26,6 +32,10 @@ class Author(User):
 
     def __str__(self):
         return self.username
+
+    class Meta:
+        verbose_name = "Автор"
+        verbose_name_plural = "Авторы"
 
 class Category(models.Model):
     name=models.CharField(verbose_name='Категория', max_length=30)
@@ -44,7 +54,7 @@ class Article(models.Model):
     created_at = models.DateTimeField(verbose_name='Дата добавления', auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(verbose_name='Дата обновления', auto_now=True, db_index=True)
     is_published = models.BooleanField(verbose_name='Опубликовано', default=True)
-    is_deleted = models.BooleanField(verbose_name='Удалена', default=True)
+    is_deleted = models.BooleanField(verbose_name='Удалена', default=False)
     is_approved=models.BooleanField(verbose_name='Проверена модератором', default=False)
 
     def __str__(self):
