@@ -21,7 +21,7 @@ class Moderator(User):
 
 class Author(User):
     date_of_birth = models.DateField(null=True, blank=True)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     is_banned = models.BooleanField(default=False)
 
     def __str__(self):
