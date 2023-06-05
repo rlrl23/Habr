@@ -11,6 +11,10 @@ import Header from "./components/Header";
 import Profile from "./components/Profile";
 import LoginForm from "./components/Auth";
 import Cookies from "universal-cookie";
+import ArticleCreate from "./components/ArticleCreate";
+import InfoPage from "./components/InfoPage";
+
+import RegisterUserForm from "./components/Register";
 
 class App extends React.Component {
   constructor(props) {
@@ -19,10 +23,10 @@ class App extends React.Component {
       articles: [],
       categories: [],
       comments: [],
-      likes:[],
+      likes: [],
       authors: [],
       token: "",
-      id:"",
+      id: "",
     };
   }
 
@@ -32,7 +36,7 @@ class App extends React.Component {
     axios
       .post("http://127.0.0.1:8000/api-token-auth/", data)
       .then((response) => {
-      console.log('response.data', response.data);
+        console.log('response.data', response.data);
         this.set_token(response.data["token"], response.data['id']);
       })
       .catch((error) => alert("Неверный пароль или логин"));
@@ -43,7 +47,7 @@ class App extends React.Component {
     const cookies = new Cookies();
     cookies.set("token", token);
     cookies.set('id', id);
-    this.setState({ token: token, id:id }, () => this.load_data());
+    this.setState({ token: token, id: id }, () => this.load_data());
   }
 
   is_auth() {
@@ -67,37 +71,44 @@ class App extends React.Component {
   get_token_from_storage() {
     const cookies = new Cookies()
     const token = cookies.get('token')
+    this.setState({ token: token }, () => this.load_data())
+  }
+
+  get_token_from_storage() {
+    const cookies = new Cookies()
+    const token = cookies.get('token')
     const id = cookies.get('id')
     this.setState({ token: token, id: id }, () => this.load_data())
   }
 
-  write_comment(text, article, parent_id=null){
-  const data = { text: text, user: this.state.id, article: article, parent_id: parent_id};
-  axios
-      .post("http://127.0.0.1:8000/comments/", data, {headers: this.get_headers()})
+  write_comment(text, article, parent_id = null) {
+    const data = { text: text, user: this.state.id, article: article, parent_id: parent_id };
+    axios
+      .post("http://127.0.0.1:8000/comments/", data, { headers: this.get_headers() })
       .then((response) => {
         this.load_data();
       })
       .catch((error) => alert(error));
   }
 
-    like(to_user=null, to_comment=null, to_article=null){
-    const data = { from_user: this.state.id,
-                    to_user: to_user,
-                    to_comment: to_comment,
-                    to_article:to_article,
+  like(to_user = null, to_comment = null, to_article = null) {
+    const data = {
+      from_user: this.state.id,
+      to_user: to_user,
+      to_comment: to_comment,
+      to_article: to_article,
     };
     console.log('like data', data);
     axios
-      .post("http://127.0.0.1:8000/likes/", data, {headers: this.get_headers()})
+      .post("http://127.0.0.1:8000/likes/", data, { headers: this.get_headers() })
       .then((response) => {
         this.load_data();
       })
       .catch((error) => alert(error));
 
-//    console.log('like data', data);
-//    alert('Liked');
-    }
+    //    console.log('like data', data);
+    //    alert('Liked');
+  }
 
   load_data() {
     const headers = this.get_headers()
@@ -143,18 +154,41 @@ class App extends React.Component {
       .catch((error) => console.log(error));
   }
 
+  async create_article(title, category, short_description, full_description, is_draft) {
+    if (!this.state.id) {
+      return 1
+    }
+    const data = {
+      title: title,
+      category: Number(category),
+      short_description: short_description,
+      full_description: full_description,
+      is_published: !is_draft,
+      author: Number(this.state.id)
+    }
+    let err = 0
+    try {
+      await axios.post(`http://127.0.0.1:8000/articles/`, data, { headers: this.get_headers() });
+      this.load_data();
+    } catch (error) {
+      console.log(error)
+      err = 1
+    }
+    return err
+  }
+
   componentDidMount() {
     this.get_token_from_storage();
   }
 
   render() {
-  console.log('this.state.token', this.state.token);
-  console.log('I am', this.state.id);
-  console.log('Headers', this.get_headers())
+    console.log('this.state.token', this.state.token);
+    console.log('I am', this.state.id);
+    console.log('Headers', this.get_headers())
     return (
       <div>
         <BrowserRouter>
-        <Header is_auth={() =>this.is_auth()} logout={()=> this.logout()}></Header>
+          <Header is_auth={() => this.is_auth()} logout={() => this.logout()}></Header>
           <div className="body-container mx-auto pt-3">
             <Routes>
               <Route
@@ -167,7 +201,7 @@ class App extends React.Component {
                   />
                 }
               />
-        <Route
+              <Route
                 exact
                 path="/login"
                 element={
@@ -176,6 +210,14 @@ class App extends React.Component {
 
 
                   />
+                }
+              />
+              <Route path='/info' element={<InfoPage />} />
+              <Route
+                exact
+                path="/register"
+                element={
+                  <RegisterUserForm />
                 }
               />
 
@@ -196,13 +238,19 @@ class App extends React.Component {
                   <ArticleDetail
                     articles={this.state.articles}
                     comments={this.state.comments}
-                    is_auth={() =>this.is_auth()}
-                    write_comment={(text, article, parent_id)=> this.write_comment(text, article, parent_id)}
-                    like={(to_user, to_comment, to_article)=> this.like(to_user, to_comment, to_article)}
+                    is_auth={() => this.is_auth()}
+                    write_comment={(text, article, parent_id) => this.write_comment(text, article, parent_id)}
                   />
                 }
               />
               <Route path="/profile" element={<Profile />} />
+              {this.is_auth() ? <Route path="/create_article"
+                element={<ArticleCreate
+                  categories={this.state.categories}
+                  create_article={(title, category, short_description, full_description,
+                    is_draft) => this.create_article(title, category,
+                      short_description, full_description, is_draft)} />} />
+                : null}
             </Routes>
             <Footer />
           </div>

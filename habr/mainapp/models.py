@@ -27,7 +27,7 @@ class Moderator(User):
 
 class Author(User):
     date_of_birth = models.DateField(null=True, blank=True)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     is_banned = models.BooleanField(default=False)
 
     def __str__(self):
@@ -54,7 +54,7 @@ class Article(models.Model):
     created_at = models.DateTimeField(verbose_name='Дата добавления', auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(verbose_name='Дата обновления', auto_now=True, db_index=True)
     is_published = models.BooleanField(verbose_name='Опубликовано', default=True)
-    is_deleted = models.BooleanField(verbose_name='Удалена', default=True)
+    is_deleted = models.BooleanField(verbose_name='Удалена', default=False)
     is_approved=models.BooleanField(verbose_name='Проверена модератором', default=False)
 
     def __str__(self):

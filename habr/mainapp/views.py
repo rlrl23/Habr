@@ -1,12 +1,12 @@
 from django.contrib.auth.hashers import make_password
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.response import Response
 from rest_framework.schemas import coreapi
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin
-from rest_framework import generics, status
+from rest_framework import generics
 from .serializers import ArticleSerializer, CommentListSerializer, ArticlesDetailSerializer, CategorySerializer, CommentSerializer, LikeSerializer, AuthorSerializer, ModeratorSerializer, ArticlesListSerializer
 from .models import Article, Category, Author, Comment, Like, Moderator
 

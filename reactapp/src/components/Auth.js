@@ -1,14 +1,16 @@
 import React from "react";
-import {useNavigate} from 'react-router-dom';
-import { redirect } from "react-router-dom";
+import { redirect, Navigate } from "react-router-dom";
+
 
 class LoginForm extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
       username: "",
       password: "",
     };
+
   }
 
   handleChange(event) {
@@ -20,7 +22,6 @@ class LoginForm extends React.Component {
   handleSubmit(event) {
     this.props.get_token(this.state.username, this.state.password);
     event.preventDefault();
-//    window.location.href = "/";
   }
 
   render() {
