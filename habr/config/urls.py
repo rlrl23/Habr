@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from mainapp.views import ArticleViewSet, CategoryViewSet, AuthorViewSet, CommentViewSet, LikeViewSet, ModeratorViewSet, ArticlesList, MyToken
+from mainapp.views import ArticleViewSet, CategoryViewSet, AuthorViewSet, CommentViewSet, LikeViewSet, ModeratorViewSet, MyToken
 from rest_framework.authtoken import views
 
 router = DefaultRouter()
