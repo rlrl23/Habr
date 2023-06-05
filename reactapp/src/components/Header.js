@@ -14,7 +14,7 @@ class Header extends React.Component {
                 <NavLink to='/'>
                     <div className='d-flex text-light'>
                         <div><i className="bi bi-braces"></i></div>
-                        <div className='ms-2' id='habr_title'><strong>Habr</strong></div>
+                        <div className='ms-2' id='habr_title'><strong>Okay Habr</strong></div>
                     </div>
                 </NavLink>
                 <div className='d-flex'>

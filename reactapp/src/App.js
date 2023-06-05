@@ -104,7 +104,7 @@ class App extends React.Component {
       .then((response) => {
         this.load_data();
       })
-      .catch((error) => alert(error));
+      .catch((error) => console.log(error));
 
     //    console.log('like data', data);
     //    alert('Liked');
@@ -168,7 +168,7 @@ class App extends React.Component {
     }
     let err = 0
     try {
-      await axios.post(`http://127.0.0.1:8000/articles/`, data, { headers: this.get_headers() });
+      await axios.post('http://127.0.0.1:8000/articles/', data, { headers: this.get_headers() });
       this.load_data();
     } catch (error) {
       console.log(error)
@@ -240,6 +240,7 @@ class App extends React.Component {
                     comments={this.state.comments}
                     is_auth={() => this.is_auth()}
                     write_comment={(text, article, parent_id) => this.write_comment(text, article, parent_id)}
+                    like={(to_user, to_comment, to_article) => this.like(to_user, to_comment, to_article)}
                   />
                 }
               />

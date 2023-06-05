@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.schemas import coreapi
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin
-from rest_framework import generics
+from rest_framework import generics, status
 from .serializers import ArticleSerializer, CommentListSerializer, ArticlesDetailSerializer, CategorySerializer, CommentSerializer, LikeSerializer, AuthorSerializer, ModeratorSerializer, ArticlesListSerializer
 from .models import Article, Category, Author, Comment, Like, Moderator
 
@@ -15,7 +15,7 @@ class ArticleViewSet(ModelViewSet):
     serializer_class = ArticleSerializer
 
     def list(self, request, *args, **kwargs):
-        queryset = self.queryset.filter(is_approved=True, is_published=True).order_by('-updated_at').exclude(is_deleted=True)
+        queryset = self.queryset.filter(is_approved=True, is_published=True).order_by('-created_at').exclude(is_deleted=True)
 
         page = self.paginate_queryset(queryset)
         if page is not None:
