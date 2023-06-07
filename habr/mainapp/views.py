@@ -8,9 +8,10 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin
 from rest_framework import generics, permissions
 from rest_framework.views import APIView
+from rest_framework.authtoken.models import Token
 from .serializers import ArticleSerializer, CommentListSerializer, ArticlesDetailSerializer, CategorySerializer, \
     CommentSerializer, LikeSerializer, AuthorSerializer, ModeratorSerializer, ArticlesListSerializer, \
-    ArticlesCreateSerializer
+    ArticlesCreateSerializer, ProfileSerializer
 from .models import Article, Category, Author, Comment, Like, Moderator
 
 
@@ -52,6 +53,7 @@ class CategoryViewSet(ModelViewSet):
 class ModeratorViewSet(ModelViewSet):
     queryset = Moderator.objects.all()
     serializer_class = ModeratorSerializer
+
     def perform_create(self, serializer):
         serializer.save(password=make_password(self.request.data['password']))
 
@@ -60,14 +62,15 @@ class AuthorViewSet(ModelViewSet, APIView):
     permission_classes = [permissions.AllowAny]
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
+
     def perform_create(self, serializer):
         serializer.save(password=make_password(self.request.data['password']))
-
 
 
 class CommentViewSet(ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+
 
 class LikeViewSet(ModelViewSet):
     queryset = Like.objects.all()
@@ -81,6 +84,13 @@ class MyToken(ObtainAuthToken):
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
         return Response({'token': token.key, 'id': user.id})
+
+
+class Profile(APIView):
+    def get(self, request, *args, **kwargs):
+        user_id = Token.objects.filter(key=request.headers['Authorization'].replace('Token ', '')).first().user_id
+        author = Author.objects.filter(user_ptr_id=user_id).first()
+        return Response(ProfileSerializer(author).data)
 
 
 obtain_auth_token = MyToken.as_view()
