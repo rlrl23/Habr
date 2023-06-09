@@ -248,7 +248,7 @@ class App extends React.Component {
                   />
                 }
               />
-              <Route path="/profile" element={<Profile profile={this.state.profile}/>} />
+              <Route path="/profile" element={<Profile/>} />
               {this.is_auth() ? <Route path="/create_article"
                 element={<ArticleCreate
                   categories={this.state.categories}

@@ -32,7 +32,6 @@ const ArticleItem = ({ article}) => {
 }
 
 const ArticleList = ({ articles, categories }) => {
-console.log('articles', articles);
 
     let { category_slug } = useParams();
     if (category_slug) {

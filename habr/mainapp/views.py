@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import render
 from rest_framework.authtoken.models import Token
@@ -90,6 +91,18 @@ class Profile(APIView):
     def get(self, request, *args, **kwargs):
         user_id = Token.objects.filter(key=request.headers['Authorization'].replace('Token ', '')).first().user_id
         author = Author.objects.filter(user_ptr_id=user_id).first()
+        return Response(ProfileSerializer(author).data)
+
+    def post(self, request, *args, **kwargs):
+        user_id = Token.objects.filter(key=request.headers['Authorization'].replace('Token ', '')).first().user_id
+        author = Author.objects.filter(user_ptr_id=user_id).first()
+        data = request.data
+        author.username = data['username']
+        author.first_name = data['first_name']
+        author.last_name = data['last_name']
+        author.description = data['description']
+        author.date_of_birth = datetime.strptime(data['date_of_birth'], '%Y-%m-%d').date()
+        author.save()
         return Response(ProfileSerializer(author).data)
 
 
