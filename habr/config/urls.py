@@ -17,7 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from mainapp.views import ArticleViewSet, CategoryViewSet, AuthorViewSet, CommentViewSet, LikeViewSet, ModeratorViewSet, ArticlesList, MyToken
+from mainapp.views import ArticleViewSet, CategoryViewSet, AuthorViewSet, CommentViewSet, LikeViewSet, ModeratorViewSet, \
+    ArticlesList, MyToken, Profile
 from rest_framework.authtoken import views
 
 router = DefaultRouter()
@@ -28,11 +29,11 @@ router.register('moderators', ModeratorViewSet)
 router.register('comments', CommentViewSet)
 router.register('likes', LikeViewSet)
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
     path('list/articles', ArticlesList.as_view()),
     path('api-auth/', include('rest_framework.urls')),
     path('api-token-auth/', MyToken.as_view()),
+    path('profile/', Profile.as_view())
 ]
