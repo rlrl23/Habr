@@ -9,19 +9,23 @@
 }
 
 .footer {
-    margin-top: 20px;
-    height: 70px;
+    /*margin-bottom: 10px;*/
+    height: 80px;
     background: #0f71f1;
     box-sizing: border-box;
 }
 
 .footer_bottom_item {
-    margin-top: 20px;
+    /*margin-top: 10px;*/
     padding-top: 20px;
-    padding-left: 40px;
+    padding-left: 70px;
     font-size: 16px;
     line-height: 5px;
     color: #ffffff;
+}
+
+.content_n {
+    margin-bottom: 150px;
 }
 
 .btn1 {

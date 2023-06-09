@@ -190,6 +190,7 @@ class App extends React.Component {
         <BrowserRouter>
           <Header is_auth={() => this.is_auth()} logout={() => this.logout()}></Header>
           <div className="body-container mx-auto pt-3">
+          <div class="content_n">
             <Routes>
               <Route
                 exact
@@ -253,8 +254,10 @@ class App extends React.Component {
                       short_description, full_description, is_draft)} />} />
                 : null}
             </Routes>
-            <Footer />
+
           </div>
+          </div>
+          <Footer />
         </BrowserRouter>
       </div>
     );
