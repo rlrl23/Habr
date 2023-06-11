@@ -126,7 +126,8 @@ class Profile(APIView):
         author.first_name = data['first_name']
         author.last_name = data['last_name']
         author.description = data['description']
-        author.date_of_birth = datetime.strptime(data['date_of_birth'], '%Y-%m-%d').date()
+        if data['date_of_birth']:
+            author.date_of_birth = datetime.strptime(data['date_of_birth'], '%Y-%m-%d').date()
         author.save()
         return Response(ProfileSerializer(author).data)
 
