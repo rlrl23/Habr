@@ -27,6 +27,7 @@ class App extends React.Component {
       authors: [],
       token: "",
       id: "",
+      profile: {}
     };
   }
 
@@ -152,6 +153,12 @@ class App extends React.Component {
         this.setState({ likes: likes });
       })
       .catch((error) => console.log(error));
+    axios
+      .get("http://127.0.0.1:8000/profile/", { headers: headers })
+      .then((response) => {
+        this.setState({ profile: response.data });
+      })
+      .catch((error) => console.log(error));
   }
 
   async create_article(title, category, short_description, full_description, is_draft) {
@@ -182,9 +189,9 @@ class App extends React.Component {
   }
 
   render() {
-    console.log('this.state.token', this.state.token);
-    console.log('I am', this.state.id);
-    console.log('Headers', this.get_headers())
+    // console.log('this.state.token', this.state.token);
+    // console.log('I am', this.state.id);
+    // console.log('Headers', this.get_headers())
     return (
       <div>
         <BrowserRouter>
@@ -207,8 +214,6 @@ class App extends React.Component {
                 element={
                   <LoginForm
                     get_token={(username, password) => this.get_token(username, password)}
-
-
                   />
                 }
               />
@@ -244,7 +249,7 @@ class App extends React.Component {
                   />
                 }
               />
-              <Route path="/profile" element={<Profile />} />
+              <Route path="/profile" element={<Profile/>} />
               {this.is_auth() ? <Route path="/create_article"
                 element={<ArticleCreate
                   categories={this.state.categories}

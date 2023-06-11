@@ -95,3 +95,15 @@ class ArticlesDetailSerializer(ModelSerializer):
         fields = ['id', 'category', 'author', 'created_at', "updated_at", "title", "short_description",
                   "full_description", "is_published", "is_deleted", 'is_approved', 'comment_article', 'liked_article']
 
+
+class ArticlesCreateSerializer(ModelSerializer):
+    class Meta:
+        model = Article
+        fields = ('title', 'author', 'category', 'short_description', 'full_description', 'is_published')
+
+
+class ProfileSerializer(ModelSerializer):
+    class Meta:
+        model = Author
+        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'date_of_birth', 'description',
+                  'is_banned', 'is_moderator']

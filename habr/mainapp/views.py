@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import render
 from rest_framework.authtoken.models import Token
@@ -6,8 +7,12 @@ from rest_framework.response import Response
 from rest_framework.schemas import coreapi
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin
-from rest_framework import generics, status
-from .serializers import ArticleSerializer, CommentListSerializer, ArticlesDetailSerializer, CategorySerializer, CommentSerializer, LikeSerializer, AuthorSerializer, ModeratorSerializer, ArticlesListSerializer
+from rest_framework import generics, permissions, status
+from rest_framework.views import APIView
+from rest_framework.authtoken.models import Token
+from .serializers import ArticleSerializer, CommentListSerializer, ArticlesDetailSerializer, CategorySerializer, \
+    CommentSerializer, LikeSerializer, AuthorSerializer, ModeratorSerializer, ArticlesListSerializer, \
+    ArticlesCreateSerializer, ProfileSerializer
 from .models import Article, Category, Author, Comment, Like, Moderator
 
 class ArticleViewSet(ModelViewSet):
@@ -38,12 +43,16 @@ class CategoryViewSet(ModelViewSet):
 class ModeratorViewSet(ModelViewSet):
     queryset = Moderator.objects.all()
     serializer_class = ModeratorSerializer
+
     def perform_create(self, serializer):
         serializer.save(password=make_password(self.request.data['password']))
 
-class AuthorViewSet(ModelViewSet):
+
+class AuthorViewSet(ModelViewSet, APIView):
+    permission_classes = [permissions.AllowAny]
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
+
     def perform_create(self, serializer):
         serializer.save(password=make_password(self.request.data['password']))
 
@@ -51,6 +60,7 @@ class AuthorViewSet(ModelViewSet):
 class CommentViewSet(ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -97,6 +107,25 @@ class MyToken(ObtainAuthToken):
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
         return Response({'token': token.key, 'id':user.id})
+
+
+class Profile(APIView):
+    def get(self, request, *args, **kwargs):
+        user_id = Token.objects.filter(key=request.headers['Authorization'].replace('Token ', '')).first().user_id
+        author = Author.objects.filter(user_ptr_id=user_id).first()
+        return Response(ProfileSerializer(author).data)
+
+    def post(self, request, *args, **kwargs):
+        user_id = Token.objects.filter(key=request.headers['Authorization'].replace('Token ', '')).first().user_id
+        author = Author.objects.filter(user_ptr_id=user_id).first()
+        data = request.data
+        author.username = data['username']
+        author.first_name = data['first_name']
+        author.last_name = data['last_name']
+        author.description = data['description']
+        author.date_of_birth = datetime.strptime(data['date_of_birth'], '%Y-%m-%d').date()
+        author.save()
+        return Response(ProfileSerializer(author).data)
 
 
 obtain_auth_token = MyToken.as_view()
