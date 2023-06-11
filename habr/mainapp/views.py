@@ -15,6 +15,9 @@ from .serializers import ArticleSerializer, CommentListSerializer, ArticlesDetai
     ArticlesCreateSerializer, ProfileSerializer
 from .models import Article, Category, Author, Comment, Like, Moderator
 
+class ArticlesList(generics.ListAPIView):
+    queryset = Article.objects.all()
+    serializer_class = ArticlesListSerializer
 class ArticleViewSet(ModelViewSet):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
