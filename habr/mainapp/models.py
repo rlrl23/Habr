@@ -43,7 +43,9 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
-
+    class Meta:
+        verbose_name = "Категория"
+        verbose_name_plural = "Категории"
 class Article(models.Model):
     category=models.ForeignKey(Category, on_delete=models.CASCADE,verbose_name='Категория', related_name='category_name')
     title = models.CharField(verbose_name='Заголовок', max_length=255)
@@ -59,7 +61,9 @@ class Article(models.Model):
 
     def __str__(self):
         return self.title
-
+    class Meta:
+        verbose_name = "Статья"
+        verbose_name_plural = "Статьи"
 class Comment(models.Model):
     text=models.TextField(null=False, verbose_name='text')
     user=models.ForeignKey(Author, on_delete=models.CASCADE, null=False, related_name='comment_author',
@@ -73,11 +77,15 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.text
-
+    class Meta:
+        verbose_name = "Комментарий"
+        verbose_name_plural = "Комментарии"
 class Like(models.Model):
     from_user=models.ForeignKey(Author, on_delete=models.CASCADE, null=False, related_name='like_from')
     to_user=models.ForeignKey(Author, on_delete=models.CASCADE, null=True, related_name='like_to')
     to_comment = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True, related_name='liked_comment')
     to_article=models.ForeignKey(Article, on_delete=models.CASCADE, null=True, related_name='liked_article')
     datetime=models.DateTimeField(auto_now_add=True)
-
+    class Meta:
+        verbose_name = "Лайк"
+        verbose_name_plural = "Лайки"
